@@ -38,6 +38,10 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/user").authenticated()
                 .antMatchers(HttpMethod.PUT, "/user").permitAll()
+                .antMatchers("/book/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/book/**").authenticated()
+                .antMatchers(HttpMethod.PATCH, "/book/**").authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .httpBasic();
     }
