@@ -1,10 +1,13 @@
 package book.adopt.book;
 
+import book.adopt.user.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity(name = "book")
 @Table(name = "book")
@@ -19,5 +22,9 @@ public class Book {
     private String name;
     private String author;
     private String description;
+
+   @JsonIgnoreProperties("books")
+   @ManyToMany(mappedBy = "books", targetEntity = User.class)
+   private Set<User> users;
 
 }
