@@ -1,7 +1,9 @@
 package book.adopt.user;
 
 import book.adopt.book.Book;
+import book.adopt.bookAd.BookAd;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,6 +35,10 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "book_id")
     )
     private Set<Book> books;
+
+    @JsonManagedReference
+    @OneToMany(targetEntity = BookAd.class, mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<BookAd> booksAd;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
