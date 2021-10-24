@@ -1,5 +1,7 @@
 package book.adopt.user;
 
+import book.adopt.book.Book;
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +9,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -69,4 +73,5 @@ public class UserService implements UserDetailsService{
         user.setPassword(new BCryptPasswordEncoder().encode(userData.getPassword()));
         userRepository.updateUser(user.getId(), user.getUsername(), user.getPassword());
     }
+
 }
