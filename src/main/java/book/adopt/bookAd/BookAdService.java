@@ -21,14 +21,31 @@ public class BookAdService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
+    /**
+     *
+     * @return list of all existing bookAD
+     */
     public List<BookAd> getAllBookAd() {
         return bookAdRepository.findAll();
     }
 
+    /**
+     *
+     * @param id
+     * @return bookAd with id from param
+     * @throws java.util.NoSuchElementException if any of book don't have this id
+     */
     public BookAd getBookAd(@NotNull long id) {
         return bookAdRepository.findById(id).orElseThrow();
     }
 
+    /**
+     * making new BookAd
+     * bookAd must be unique, user can't make two announcements for one book
+     * @param username of owner
+     * @param bookAdData information about bookAd
+     * @throws Exception if for this book already existing announcement for this user
+     */
     @SneakyThrows
     public void makeBookAd(@NotNull String username, @NotNull BookAdData bookAdData) {
         User user = userRepository.getUserByUsername(username);
@@ -50,6 +67,12 @@ public class BookAdService {
         bookAdRepository.save(bookAd);
     }
 
+    /**
+     * delete bookAd with specified in in param
+     * @param username of owner
+     * @param id of bookId
+     * @throws BadCredentialsException if someone is trying to delete an ad that does not belong to him
+     */
     public void deleteBookAd(@NotNull String username, @NotNull long id) {
         BookAd bookAd = bookAdRepository.getById(id);
 
