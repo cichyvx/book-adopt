@@ -1,7 +1,7 @@
 package book.adopt.bookAd;
 
 import book.adopt.user.User;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,7 +34,7 @@ public class BookAd {
     private byte toExchange;
 
     @ManyToOne()
-    @JsonBackReference
+    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
     private User owner;
 

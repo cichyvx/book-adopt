@@ -2,7 +2,6 @@ package book.adopt.book;
 
 import book.adopt.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +22,6 @@ public class Book {
     private String author;
     private String description;
 
-   //@JsonIgnoreProperties("books")
     @JsonIgnore
    @ManyToMany(mappedBy = "books", targetEntity = User.class)
    private Set<User> users;
