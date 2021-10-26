@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Repository
@@ -15,7 +16,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findBookByAuthor(String author);
     List<Book> findBookByName(String name);
 
-    Book findById(long id);
+    Optional<Book> findById(long id);
 
     @Modifying
     @Transactional

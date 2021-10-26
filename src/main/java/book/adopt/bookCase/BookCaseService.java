@@ -26,7 +26,7 @@ public class BookCaseService {
      * @return list of all owned book from user with specified username
      */
     public Set<Book> getUserBook(@NotNull String username) {
-        return userRepository.getUserByUsername(username).getBooks();
+        return userRepository.getUserByUsername(username).orElseThrow().getBooks();
     }
 
     /**
@@ -35,10 +35,10 @@ public class BookCaseService {
      * @param bookId book id to be added
      */
     public void addBookToUser(@NotNull String username,@NotNull long bookId){
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         Book book = bookRepository.getById(bookId);
 
-        assert user != null || book != null;
+        assert book != null;
 
         BookCase bookCase = new BookCase();
         bookCase.setUserId(user.getId());
@@ -53,10 +53,10 @@ public class BookCaseService {
      * @param bookId book to be deleted
      */
     public void deleteBookFromUser(@NotNull String username, @NotNull long bookId) {
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         Book book = bookRepository.getById(bookId);
 
-        assert user != null || book != null;
+        assert book != null;
 
         bookCaseRepository.deleteBook(user.getId(), book.getId());
     }
@@ -70,7 +70,7 @@ public class BookCaseService {
      */
     @SneakyThrows
     public Book getBookFromUser(@NotNull String username, @NotNull long bookId) {
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         for(Book b : user.getBooks()){
             if(b.getId() == bookId)
                 return b;

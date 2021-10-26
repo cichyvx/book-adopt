@@ -6,10 +6,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    User getUserByUsername(String username);
+    Optional<User> getUserByUsername(String username);
 
     @Transactional
     void deleteByUsername(String username);

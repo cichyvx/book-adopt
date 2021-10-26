@@ -48,13 +48,17 @@ public class BookAdService {
      */
     @SneakyThrows
     public void makeBookAd(@NotNull String username, @NotNull BookAdData bookAdData) {
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         Book book = bookRepository.getById(bookAdData.getBookId());
 
-        assert user != null || book != null;
+        assert book != null;
 
-        if(bookAdRepository.getByBookIdAndUserId(bookAdData.getBookId(), user.getId()) != null){
+        if(bookAdRepository.findByBookIdAndUserId(bookAdData.getBookId(), user.getId()).isPresent()){
             throw new Exception("book ad already exist");
+        }
+
+        if(!user.getBooks().contains(book)){
+            throw new IllegalArgumentException("you don't have this book in your bookcase");
         }
 
         BookAd bookAd = new BookAd();

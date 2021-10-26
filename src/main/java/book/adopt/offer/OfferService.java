@@ -28,7 +28,7 @@ public class OfferService {
      * @return list of all offer sent by user from param
      */
     public List<Offer> getSendOfferFromUser(@NotNull String username) {
-        return offerRepository.getByUserId(userRepository.getUserByUsername(username).getId());
+        return offerRepository.getByUserId(userRepository.getUserByUsername(username).orElseThrow().getId());
     }
 
     /**
@@ -37,9 +37,7 @@ public class OfferService {
      * @return list of all offer received by user from param
      */
     public List<Offer> getReceivedOfferFromUser(String username) {
-        User user = userRepository.getUserByUsername(username);
-
-        assert user != null;
+        User user = userRepository.getUserByUsername(username).orElseThrow();
 
         List<Offer> list = new java.util.ArrayList<>(Collections.emptyList());
 
@@ -59,10 +57,8 @@ public class OfferService {
      * @throws NullPointerException if auction require something for exchange, and you not put nothing in your offer
      */
     public void makeOffer(@NotNull String username, @NotNull long bookAdId, Long bookId) {
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         BookAd bookAd = bookAdRepository.findById(bookAdId).orElseThrow();
-
-        assert user!= null || bookAd != null;
 
         if (user.getBooksAd().contains(bookAd)){
             throw new IllegalAccessError("you cannot offer to your ad");
@@ -88,10 +84,8 @@ public class OfferService {
      * @throws IllegalAccessError if you want reject offer that has benn not sent to you
      */
     public void rejectOffer(String username, long offerId) {
-        Offer offer = offerRepository.getById(offerId);
-        User user = userRepository.getUserByUsername(username);
-
-        assert offer != null || user != null;
+        Offer offer = offerRepository.findById(offerId).orElseThrow();
+        User user = userRepository.getUserByUsername(username).orElseThrow();
 
         boolean isOwner = false;
 
@@ -118,10 +112,8 @@ public class OfferService {
      */
     public void acceptOffer(String username, long offerId) {
         Offer offer = offerRepository.findById(offerId).orElseThrow();
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         BookAd bookAd = bookAdRepository.findById(offer.getBookAdId()).orElseThrow();
-
-        assert offer != null || user != null;
 
         boolean isOwner = false;
 

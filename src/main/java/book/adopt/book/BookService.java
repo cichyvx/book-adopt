@@ -17,7 +17,7 @@ public class BookService {
     }
 
     public Book getBook(long id) {
-        return bookRepository.findById(id);
+        return bookRepository.findById(id).orElseThrow();
     }
 
     public List<Book> getBookByAuthor(String author) {

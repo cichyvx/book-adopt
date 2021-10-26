@@ -20,14 +20,14 @@ public class UserService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         if(user == null)
             throw new UsernameNotFoundException("user not found");
         return user;
     }
 
     public User getUserByUsername(String username){
-        User user = userRepository.getUserByUsername(username);
+        User user = userRepository.getUserByUsername(username).orElseThrow();
         return user;
     }
 
@@ -63,7 +63,7 @@ public class UserService implements UserDetailsService{
         User user = getUserByUsername(name);
         if(user == null)
             throw new UsernameNotFoundException("user: " + name + " don't exist");
-        User testUser = userRepository.getUserByUsername(userData.getUsername());
+        User testUser = userRepository.getUserByUsername(userData.getUsername()).orElseThrow();
         if(testUser != null){
             if(!testUser.equals(user)){
                 throw new BadCredentialsException("user already exist");
