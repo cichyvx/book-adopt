@@ -18,4 +18,8 @@ public interface BookCaseRepository extends JpaRepository<BookCase, Long> {
     @Modifying
     @Query("DELETE FROM bookCase b WHERE b.userId = ?1 and b.bookId = ?2")
     void deleteBook(long userId, long bookId);
+
+    @Transactional
+    @Modifying
+    void deleteAllByBookId(long bookId);
 }

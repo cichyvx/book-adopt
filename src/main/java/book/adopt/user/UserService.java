@@ -35,7 +35,7 @@ public class UserService implements UserDetailsService{
      */
     public void createUser(String username, String password) throws Exception{
         User user = new User();
-        if (getUserByUsername(username) != null)
+        if (userRepository.getUserByUsername(username).isPresent())
             throw new Exception("username already exist");
         user.setUsername(username);
         user.setPassword(new BCryptPasswordEncoder().encode(password));

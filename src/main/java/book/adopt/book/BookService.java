@@ -1,5 +1,9 @@
 package book.adopt.book;
 
+import book.adopt.bookAd.BookAd;
+import book.adopt.bookAd.BookAdRepository;
+import book.adopt.bookCase.BookCaseRepository;
+import book.adopt.offer.OfferRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
@@ -11,6 +15,9 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BookCaseRepository bookCaseRepository;
+    private final BookAdRepository bookAdRepository;
+    private final OfferRepository offerRepository;
 
     public List<Book> getAllBook() {
         return bookRepository.findAll();
@@ -30,6 +37,11 @@ public class BookService {
 
     public void deleteBook(long id) {
         bookRepository.deleteById(id);
+        bookCaseRepository.deleteAllByBookId(id);
+        List<BookAd> bookAdList = bookAdRepository.findAllByBookId(id);
+        for(BookAd b : bookAdList)
+            offerRepository.deleteOffer(b.getId());
+        bookAdRepository.deleteAllByBookId(id);
     }
 
     public void updateBook(long id, BookData bookData) {
