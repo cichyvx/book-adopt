@@ -1,5 +1,6 @@
 package book.adopt.config.security;
 
+import book.adopt.user.Role;
 import book.adopt.user.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -37,12 +38,9 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/user").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/book/*").hasAuthority(Role.ADMIN.name())
+                .antMatchers(HttpMethod.PATCH, "/book/**").hasAuthority(Role.ADMIN.name())
                 .antMatchers(HttpMethod.PUT, "/user").permitAll()
-                .antMatchers("/book/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/book/**").authenticated()
-                .antMatchers(HttpMethod.PATCH, "/book/**").authenticated()
-                .antMatchers("/bookCase/**").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic()
