@@ -38,10 +38,19 @@ public class OfferController {
      * @param principal
      * @param bookAdId book ad that you want to offer
      */
-    // TODO: 24.10.2021 ADD EXCHANGE POSSIBILITY
     @PutMapping("/{bookAdId}")
-    public void makeOffer(Principal principal, @PathVariable long bookAdId ){
+    public void makeOffer(Principal principal, @PathVariable long bookAdId){
         offerService.makeOffer(principal.getName(), bookAdId, null);
+    }
+
+    /**
+     * making offer with book to exchange
+     * @param principal
+     * @param bookAdId book ad that you want to offer
+     */
+    @PutMapping("/{bookAdId}/bookOffered/{bookId}")
+    public void makeOffer(Principal principal, @PathVariable long bookAdId, @PathVariable long bookId){
+        offerService.makeOffer(principal.getName(), bookAdId, bookId);
     }
 
     /**

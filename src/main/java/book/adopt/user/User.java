@@ -36,6 +36,19 @@ public class User implements UserDetails {
     )
     private Set<Book> books;
 
+    public boolean haveBook(long bookId){
+        for(Book b : books){
+            if(b.getId() == bookId){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean haveBook(Book book){
+        return books.contains(book);
+    }
+
     @JsonIgnore
     @OneToMany(targetEntity = BookAd.class, mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<BookAd> booksAd;

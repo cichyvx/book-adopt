@@ -1,5 +1,6 @@
 package book.adopt.offer;
 
+import book.adopt.book.Book;
 import book.adopt.bookAd.BookAd;
 import book.adopt.bookAd.BookAdRepository;
 import book.adopt.bookCase.BookCase;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -64,8 +67,13 @@ public class OfferService {
             throw new IllegalAccessError("you cannot offer to your ad");
         }
 
-        if(bookAd.toExchange() && bookId == null){
-            throw new NullPointerException("this auction required something for exchange");
+        if(bookAd.toExchange()){
+            if(bookId == null){
+                throw new NullPointerException("this auction required something for exchange");
+            }
+            if(!user.haveBook(bookId)){
+                throw new IllegalAccessError("you don't have this book");
+            }
         }
 
         Offer offer = new Offer();
@@ -112,12 +120,13 @@ public class OfferService {
      */
     public void acceptOffer(String username, long offerId) {
         Offer offer = offerRepository.findById(offerId).orElseThrow();
-        User user = userRepository.getUserByUsername(username).orElseThrow();
+        User owner = userRepository.getUserByUsername(username).orElseThrow();
         BookAd bookAd = bookAdRepository.findById(offer.getBookAdId()).orElseThrow();
+        User buyer = Objects.requireNonNull(userRepository.getById(offer.getUserId()));
 
         boolean isOwner = false;
 
-        for (BookAd b : user.getBooksAd()){
+        for (BookAd b : owner.getBooksAd()){
             if(b.getId() == offer.getBookAdId()){
                 isOwner = true;
                 break;
@@ -130,9 +139,22 @@ public class OfferService {
         bookCase.setUserId(offer.getUserId());
         bookCase.setBookId(bookAd.getBookId());
 
+        if(bookAd.toExchange() && !buyer.haveBook(offer.getBookId())){
+            offerRepository.deleteOffer(bookAd.getId());
+            throw new IllegalAccessError("buyer don't have this book");
+        }
+
         offerRepository.deleteOffer(bookAd.getId());
         bookAdRepository.deleteBookAd(bookAd.getId());
-        bookCaseRepository.deleteBook(user.getId(), bookAd.getBookId());
+        bookCaseRepository.deleteBook(owner.getId(), bookAd.getBookId());
         bookCaseRepository.save(bookCase);
+
+        if(bookAd.toExchange()){
+            bookCaseRepository.deleteBook(buyer.getId(), offer.getBookId());
+            bookCase = new BookCase();
+            bookCase.setUserId(owner.getId());
+            bookCase.setBookId(offer.getBookId());
+            bookCaseRepository.save(bookCase);
+        }
     }
 }
