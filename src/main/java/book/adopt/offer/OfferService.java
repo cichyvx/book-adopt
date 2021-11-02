@@ -124,16 +124,9 @@ public class OfferService {
         BookAd bookAd = bookAdRepository.findById(offer.getBookAdId()).orElseThrow();
         User buyer = Objects.requireNonNull(userRepository.getById(offer.getUserId()));
 
-        boolean isOwner = false;
-
-        for (BookAd b : owner.getBooksAd()){
-            if(b.getId() == offer.getBookAdId()){
-                isOwner = true;
-                break;
-            }
-        }
-        if(!isOwner)
+        if(!owner.haveBookAd(bookAd))
             throw new IllegalAccessError("access denied");
+
 
         BookCase bookCase = new BookCase();
         bookCase.setUserId(offer.getUserId());

@@ -36,6 +36,10 @@ public class User implements UserDetails {
     )
     private Set<Book> books;
 
+    @JsonIgnore
+    @OneToMany(targetEntity = BookAd.class, mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<BookAd> booksAd;
+
     public boolean haveBook(long bookId){
         for(Book b : books){
             if(b.getId() == bookId){
@@ -49,9 +53,18 @@ public class User implements UserDetails {
         return books.contains(book);
     }
 
-    @JsonIgnore
-    @OneToMany(targetEntity = BookAd.class, mappedBy = "owner", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<BookAd> booksAd;
+    public boolean haveBookAd(long bookAdId){
+        for(BookAd b : booksAd){
+            if(b.getId() == bookAdId){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean haveBookAd(BookAd bookAd){
+        return booksAd.contains(bookAd);
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
