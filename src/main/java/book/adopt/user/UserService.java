@@ -16,15 +16,11 @@ public class UserService implements UserDetailsService{
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.getUserByUsername(username).orElseThrow();
-        if(user == null)
-            throw new UsernameNotFoundException("user not found");
-        return user;
+        return userRepository.getUserByUsername(username).orElseThrow();
     }
 
     public User getUserByUsername(String username){
-        User user = userRepository.getUserByUsername(username).orElseThrow();
-        return user;
+        return userRepository.getUserByUsername(username).orElseThrow();
     }
 
     /**
@@ -35,8 +31,10 @@ public class UserService implements UserDetailsService{
      */
     public void createUser(String username, String password) throws Exception{
         User user = new User();
+
         if (userRepository.getUserByUsername(username).isPresent())
             throw new Exception("username already exist");
+
         user.setUsername(username);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
         user.setRole(Role.USER.name());
@@ -57,12 +55,11 @@ public class UserService implements UserDetailsService{
      */
     public void updateUser(String name, UserData userData) {
         User user = getUserByUsername(name);
-        if(user == null)
-            throw new UsernameNotFoundException("user: " + name + " don't exist");
-        User testUser = userRepository.getUserByUsername(userData.getUsername()).orElseThrow();
-        if(testUser != null){
-            if(!testUser.equals(user)){
-                throw new BadCredentialsException("user already exist");
+
+        var testUser = userRepository.getUserByUsername(userData.getUsername());
+        if(testUser.isPresent()){
+            if(!testUser.get().equals(user)){
+                throw new BadCredentialsException("username already exist");
             }
         }
         user.setUsername(userData.getUsername());

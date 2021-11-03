@@ -1,6 +1,5 @@
 package book.adopt.offer;
 
-import book.adopt.book.Book;
 import book.adopt.bookAd.BookAd;
 import book.adopt.bookAd.BookAdRepository;
 import book.adopt.bookCase.BookCase;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -93,18 +91,10 @@ public class OfferService {
      */
     public void rejectOffer(String username, long offerId) {
         Offer offer = offerRepository.findById(offerId).orElseThrow();
-        User user = userRepository.getUserByUsername(username).orElseThrow();
+        User owner = userRepository.getUserByUsername(username).orElseThrow();
 
-        boolean isOwner = false;
-
-        for (BookAd b : user.getBooksAd()){
-            if(b.getId() == offer.getBookAdId()){
-                isOwner = true;
-                break;
-            }
-        }
-        if(!isOwner)
-            throw new IllegalAccessError();
+        if(!owner.haveBookAd(offer.getBookAdId()))
+            throw new IllegalAccessError("access denied");
 
         offerRepository.deleteOffer(offerId);
 

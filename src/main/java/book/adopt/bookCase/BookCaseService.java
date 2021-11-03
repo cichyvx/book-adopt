@@ -36,9 +36,7 @@ public class BookCaseService {
      */
     public void addBookToUser(@NotNull String username,@NotNull long bookId){
         User user = userRepository.getUserByUsername(username).orElseThrow();
-        Book book = bookRepository.getById(bookId);
-
-        assert book != null;
+        Book book = bookRepository.findById(bookId).orElseThrow();
 
         BookCase bookCase = new BookCase();
         bookCase.setUserId(user.getId());
@@ -54,9 +52,7 @@ public class BookCaseService {
      */
     public void deleteBookFromUser(@NotNull String username, @NotNull long bookId) {
         User user = userRepository.getUserByUsername(username).orElseThrow();
-        Book book = bookRepository.getById(bookId);
-
-        assert book != null;
+        Book book = bookRepository.findById(bookId).orElseThrow();
 
         bookCaseRepository.deleteBook(user.getId(), book.getId());
     }
