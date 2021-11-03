@@ -49,15 +49,13 @@ public class BookAdService {
     @SneakyThrows
     public void makeBookAd(@NotNull String username, @NotNull BookAdData bookAdData) {
         User user = userRepository.getUserByUsername(username).orElseThrow();
-        Book book = bookRepository.getById(bookAdData.getBookId());
-
-        assert book != null;
+        Book book = bookRepository.findById(bookAdData.getBookId()).orElseThrow();
 
         if(bookAdRepository.findByBookIdAndUserId(bookAdData.getBookId(), user.getId()).isPresent()){
             throw new Exception("book ad already exist");
         }
 
-        if(!user.getBooks().contains(book)){
+        if(!user.haveBook(book)){
             throw new IllegalArgumentException("you don't have this book in your bookcase");
         }
 
@@ -78,9 +76,7 @@ public class BookAdService {
      * @throws BadCredentialsException if someone is trying to delete an ad that does not belong to him
      */
     public void deleteBookAd(@NotNull String username, @NotNull long id) {
-        BookAd bookAd = bookAdRepository.getById(id);
-
-        assert bookAd != null;
+        BookAd bookAd = bookAdRepository.findById(id).orElseThrow();
 
         if(!bookAd.getOwner().getUsername().equals(username)){
             throw new BadCredentialsException("");
