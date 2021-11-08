@@ -1,5 +1,6 @@
 package book.adopt.user;
 
+import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +38,9 @@ public class UserService implements UserDetailsService{
 
         if (userRepository.getUserByUsername(username).isPresent())
             throw new Exception("username already exist");
+
+        if(password.isEmpty() || username.isEmpty())
+            throw new Exception("illegal password characters");
 
         user.setUsername(username);
         user.setPassword(new BCryptPasswordEncoder().encode(password));
@@ -66,5 +73,4 @@ public class UserService implements UserDetailsService{
         user.setPassword(new BCryptPasswordEncoder().encode(userData.getPassword()));
         userRepository.updateUser(user.getId(), user.getUsername(), user.getPassword());
     }
-
 }
