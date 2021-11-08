@@ -55,3 +55,25 @@ you can also submit offers to other users yourself
 - first check list of all book ad and choose that you want
 - to make offer without exchange just use [/offer/{bookAdId}](http://localhost:8080/offer/{bookAdId}) method PUT, where bookAdId is id of book ad
 - to make offer with exchange use [/offer/{offerId}/bookOffered/{bookId}](http://localhost:8080/offer/{offerId}/bookOffered/{bookId}) method PUT, where bookId is book you offered to exchange
+
+### rest of the endpoints
+#### user
+~~~
+/user @Delete - deleting own account
+/user @Path   - change of login or password (JSON sent, identical to the one at registration)
+~~~
+#### book
+~~~
+/book/{bookId} @GET    - details about the book with given id
+/book/{bookId} @Path   - updating details of book (JSON sent, identical to the one when you adding book)
+/book/{bookId} @Delete - deleting book with given id
+~~~
+#### bookCase
+~~~
+/bookCase/{bookId} @Get    - get book from your bookcase
+/bookCase/{bookId} @Delete - delete book from your bookcase
+~~~
+#### bookAd
+~~~
+/bookAd/{bookAdId} @Delete - delete book ad if you own it
+~~~
